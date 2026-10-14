@@ -1,0 +1,14 @@
+# Python dependencies for the OLED dashboard tools
+# Install with: python -m pip install -r requirments.txt
+
+pyserial
+requests
+psutil
+websockets
+pyautogui
+keyboard
+pynput
+plyer
+comtypes
+
+    
