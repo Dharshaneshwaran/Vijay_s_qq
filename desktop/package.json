@@ -1,0 +1,50 @@
+{
+    "name":  "qbit-desktop",
+    "version":  "1.0.0",
+    "private":  true,
+    "type":  "module",
+    "main":  "dist-electron/main.js",
+    "scripts":  {
+                    "dev":  "npm run build:electron \u0026\u0026 concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 \u0026\u0026 electron . --dev\"",
+                    "build:electron":  "tsc -p tsconfig.electron.json \u0026\u0026 node -e \"require(\u0027node:fs\u0027).copyFileSync(\u0027electron/preload.cjs\u0027,\u0027dist-electron/preload.cjs\u0027)\"",
+                    "build":  "tsc --noEmit \u0026\u0026 vite build \u0026\u0026 npm run build:electron",
+                    "start":  "electron .",
+                    "dist":  "npm run build \u0026\u0026 electron-builder --win portable",
+                    "test":  "npm run build \u0026\u0026 node scripts/expression-check.cjs \u0026\u0026 electron scripts/smoke.cjs \u0026\u0026 electron scripts/upgrade-check.cjs",
+                    "test:drag":  "electron scripts/drag-check.cjs \u0026\u0026 electron scripts/drag-check.cjs --verify-position",
+                    "test:hardware":  "node scripts/hardware-check.cjs"
+                },
+    "dependencies":  {
+                         "electron-store":  "^10.0.0",
+                         "lucide-react":  "^0.468.0",
+                         "react":  "^19.0.0",
+                         "react-dom":  "^19.0.0",
+                         "systeminformation":  "^5.33.16"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "^22.0.0",
+                            "@types/react":  "^19.0.0",
+                            "@types/react-dom":  "^19.0.0",
+                            "@vitejs/plugin-react":  "^4.3.4",
+                            "concurrently":  "^9.1.0",
+                            "electron":  "^33.2.1",
+                            "electron-builder":  "^25.1.8",
+                            "typescript":  "^5.7.2",
+                            "vite":  "^6.0.0",
+                            "wait-on":  "^8.0.1"
+                        },
+    "build":  {
+                  "appId":  "com.qbit.companion",
+                  "productName":  "QBIT",
+                  "files":  [
+                                "dist/**/*",
+                                "dist-electron/**/*"
+                            ],
+                  "directories":  {
+                                      "output":  "release"
+                                  },
+                  "win":  {
+                              "target":  "portable"
+                          }
+              }
+}

@@ -1,0 +1,26 @@
+const assert=require('node:assert/strict'),path=require('node:path');
+const {pathToFileURL}=require('node:url');
+(async()=>{
+ const {ExpressionEngine,activityScore}=await import(pathToFileURL(path.resolve(__dirname,'../dist-electron/expressionEngine.js')));
+ const {DEFAULT_SETTINGS}=await import(pathToFileURL(path.resolve(__dirname,'../dist-electron/types.js')));
+ const s={cpu:0,ramPercent:0,gpus:[],battery:null},settings={...DEFAULT_SETTINGS};
+ assert.equal(activityScore({...s,cpu:70,ramPercent:70}),70);
+ assert.ok(activityScore({...s,ramPercent:100})<36,'RAM occupancy alone cannot create a stress mood');
+ assert.equal(activityScore({...s,cpu:100,ramPercent:100,gpus:[{id:'a',utilization:100}]}),100);
+ const engine=new ExpressionEngine();engine.update(s,settings,0);assert.equal(engine.expression(settings,0),'sleepy');
+ engine.update({...s,cpu:100,ramPercent:100},settings,2000);assert.equal(engine.expression(settings,2000),'sleepy','minimum duration');
+ for(let now=4000;now<=20000;now+=2000)engine.update({...s,cpu:100,ramPercent:100},settings,now);
+ assert.equal(engine.expression(settings,20000),'exhausted');
+ engine.trigger('click',21000);assert.equal(engine.expression(settings,21000),'playful');
+ engine.trigger('reminder',21001);assert.equal(engine.expression(settings,21001),'alert');
+ engine.update({...s,battery:{percent:4,isCharging:false,acConnected:false}},settings,22000);assert.equal(engine.expression(settings,22000),'exhausted','critical battery wins');
+ engine.update({...s,battery:{percent:50,isCharging:false,acConnected:false}},settings,23000);assert.equal(engine.expression(settings,23000),'alert');
+ assert.notEqual(engine.expression(settings,34000),'alert','temporary events expire');
+ engine.update({...s,battery:{percent:50,isCharging:true,acConnected:true}},settings,35000);assert.equal(engine.expression(settings,35000),'charging');
+ assert.notEqual(engine.expression(settings,40000),'charging');
+ const boundaries=new ExpressionEngine(); boundaries.update({...s,cpu:34,ramPercent:34},settings,0);
+ for(let now=2000;now<=20000;now+=2000)boundaries.update({...s,cpu:now%4000?36:34,ramPercent:35},settings,now);
+ assert.equal(boundaries.expression(settings,20000),'curious','hysteresis prevents boundary flicker');
+ assert.equal(boundaries.expression({...settings,adaptiveExpressions:false,expression:'thinking'},20000),'thinking');
+ console.log('PASS: normalized GPU weights, RAM-only behavior, real-score mood changes, moving average, minimum duration, hysteresis, event expiry, charging transition and priority order.');
+})().catch(e=>{console.error(e);process.exitCode=1});
