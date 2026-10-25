@@ -2,6 +2,12 @@
 #include <U8g2lib.h>
 #include <Wire.h>
 #include <BluetoothSerial.h>
+// ESP32-CAM brown-out mitigation: classic Bluetooth causes current spikes on
+// association. On weakly-powered boards that trips the brown-out detector and
+// the chip resets the instant a BT client connects ("connect then drop").
+// We disable the hardware brown-out detector so a brief dip won't reset the MCU.
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
 // ============================================================
 // QBIT Hub firmware - ESP32-CAM (AI-Thinker)
@@ -487,6 +493,7 @@ void announceReady() {
 // SETUP / LOOP
 // =====================================================
 void setup() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);   // disable brown-out detector (ESP32-CAM + BT)
   Serial.begin(9600);
   SerialBT.begin("QBIT-Hub");           // advertise a classic-Bluetooth SPP port
   Wire.begin(OLED_SDA, OLED_SCL);
