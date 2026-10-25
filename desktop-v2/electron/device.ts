@@ -82,7 +82,7 @@ export class DeviceLink {
   let raw: Awaited<ReturnType<typeof SerialPort.list>> = [];
   try { raw = await SerialPort.list(); }
   catch (error) { this.state.lastError = error instanceof Error ? error.message : String(error); }
-  const ports: SerialPortInfo[] = raw.map(p => ({
+  let ports: SerialPortInfo[] = raw.map(p => ({
    path: p.path,
    manufacturer: p.manufacturer ?? null,
    serialNumber: p.serialNumber ?? null,
@@ -90,6 +90,32 @@ export class DeviceLink {
    friendlyName: (p as { friendlyName?: string }).friendlyName ?? null,
    transport: classifyTransport({ path: p.path, pnpId: p.pnpId, manufacturer: p.manufacturer })
   }));
+
+  // On Linux, Bluetooth SPP shows up as /dev/rfcommN created by an rfcomm bind.
+  // SerialPort.list() enumerates udev tty devices and usually does NOT include
+  // rfcomm nodes, so probe for them explicitly and add any that exist.
+  if (process.platform === 'linux') {
+   try {
+    const fs = await import('node:fs');
+    const existing = new Set(ports.map(p => p.path));
+    for (const entry of fs.readdirSync('/dev')) {
+     if (/^rfcomm\d+$/.test(entry)) {
+      const path = `/dev/${entry}`;
+      if (!existing.has(path)) {
+       ports.push({ path, manufacturer: 'Bluetooth SPP', serialNumber: null, pnpId: null, friendlyName: 'Bluetooth serial (rfcomm)', transport: 'bluetooth' });
+      }
+     }
+    }
+   } catch { /* /dev not readable - ignore */ }
+   // Hide the noisy built-in motherboard UARTs (/dev/ttyS0..N) that are never
+   // the device and only fail with "permission denied" when clicked.
+   ports = ports.filter(p => !/^\/dev\/ttyS\d+$/.test(p.path));
+  }
+
+  // Surface the likely device first: Bluetooth, then USB, then the rest.
+  const rank = (t: SerialPortInfo['transport']) => t === 'bluetooth' ? 0 : t === 'usb' ? 1 : 2;
+  ports.sort((a, b) => rank(a.transport) - rank(b.transport) || a.path.localeCompare(b.path));
+
   this.state.ports = ports;
   if (!this.port) this.state.status = 'disconnected';
   this.emit();
@@ -117,7 +143,12 @@ export class DeviceLink {
   this.emit();
 
   await new Promise<void>((resolve, reject) => {
-   const port = new SerialPort({ path, baudRate: BAUD, autoOpen: false });
+   // Bluetooth SPP ports are fragile: when the OS virtual serial port is opened
+   // with DTR/RTS asserted (the serialport default) many stacks tear the RFCOMM
+   // channel straight back down -> "connect then instantly disconnect". We open
+   // with hardware flow control off, then immediately clear DTR & RTS so no
+   // control-line toggle reaches the link.
+   const port = new SerialPort({ path, baudRate: BAUD, autoOpen: false, rtscts: false, xon: false, xoff: false });
    port.open(err => {
     if (err) {
      this.state.status = 'disconnected';
@@ -129,6 +160,8 @@ export class DeviceLink {
      return;
     }
     this.port = port;
+    // Clear control lines so Bluetooth SPP does not drop the connection.
+    port.set({ dtr: false, rts: false }, () => { /* best-effort; some SPP ports reject set() */ });
     this.parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
     this.parser.on('data', (line: string) => this.handleLine(line));
     port.on('close', () => this.handleClose());
@@ -203,6 +236,10 @@ export class DeviceLink {
  setRain(raining: boolean) { this.sendIfChanged('rain', raining ? 'R1' : 'R0'); }
  setEmotion(expression: Expression) { this.sendIfChanged('emotion', `E${EXPRESSION_TO_EMOTION[expression]}`); }
  setWeather(mode: 'sunny' | 'monsoon') { this.sendIfChanged('weather', mode === 'sunny' ? 'W1' : 'W2'); }
+ /** Custom OLED face geometry: FG<eyeW>,<eyeH>,<radius>,<gap>,<mouth>. */
+ setFace(eyeW: number, eyeH: number, radius: number, gap: number, mouth: number) {
+  this.sendIfChanged('face', `FG${Math.round(eyeW)},${Math.round(eyeH)},${Math.round(radius)},${Math.round(gap)},${Math.round(mouth)}`);
+ }
 
  /** Alerts always go through (they are event-driven, not state). */
  alert(text: string) { this.writeLine('A' + text.slice(0, 100)); }

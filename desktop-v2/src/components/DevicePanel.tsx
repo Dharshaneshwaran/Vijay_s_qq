@@ -27,6 +27,13 @@ export default function DevicePanel({ device }: { device: DeviceState | null }) 
  const connect = async (path: string) => { setBusy(true); try { await window.qbit?.connectDevice(path); } finally { setBusy(false); } };
  const disconnect = async () => { setBusy(true); try { await window.qbit?.disconnectDevice(); } finally { setBusy(false); } };
  const send = (line: string) => { void window.qbit?.sendDevice(line); };
+ // Send the current time (and short date) to the OLED: T<HH:MM|Sun 25 Oct>
+ const sendTime = () => {
+  const now = new Date();
+  const hhmm = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  const date = now.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' });
+  send(`T${hhmm}|${date}`);
+ };
 
  return <div className="device-grid">
   <article className={`card device-status ${connected ? 'online' : 'offline'}`}>
@@ -71,6 +78,7 @@ export default function DevicePanel({ device }: { device: DeviceState | null }) 
     <button onClick={() => send('R0')} disabled={!connected}>Rain off (R0)</button>
    </div></div>
    <div className="cmd-group"><span>Other</span><div className="cmd-buttons">
+    <button onClick={sendTime} disabled={!connected}>Show time</button>
     <button onClick={() => send('BT1')} disabled={!connected}>BT icon on</button>
     <button onClick={() => send('BT0')} disabled={!connected}>BT icon off</button>
     <button onClick={() => send('A Hello from QBIT')} disabled={!connected}>Test alert</button>

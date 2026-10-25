@@ -39,6 +39,7 @@ else {
   const pushToDevice = () => {
    if (!device.connected) return;
    device.setBluetoothIcon(true);
+   device.setFace(settings.faceEyeW, settings.faceEyeH, settings.faceRadius, settings.faceGap, settings.faceMouth);
    const battery = systemStats().battery;
    if (battery) device.setBattery(battery.percent, battery.isCharging);
    if (settings.sendMoodsToDevice) device.setEmotion(currentExpression);
@@ -112,7 +113,7 @@ else {
    if (!input || typeof input !== 'object') return;
    const patch = input as Partial<Settings>, next = { ...state().settings };
    for (const key of ['muted','alwaysOnTop','animationsPaused','cursorTracking','adaptiveExpressions','trayAnimation','deviceAutoConnect','sendMoodsToDevice','sendWeatherToDevice'] as const) { if (typeof patch[key] === 'boolean') next[key] = patch[key] as boolean; }
-   for (const [key, min, max] of [['volume',0,1],['expressionIntensity',.3,1.5],['widgetSize',180,280],['pomodoroWork',1,120],['pomodoroBreak',1,60]] as const) { const value = patch[key]; if (typeof value === 'number' && Number.isFinite(value)) (next[key] as number) = Math.max(min, Math.min(max, value)); }
+   for (const [key, min, max] of [['volume',0,1],['expressionIntensity',.3,1.5],['widgetSize',180,280],['pomodoroWork',1,120],['pomodoroBreak',1,60],['faceEyeW',8,50],['faceEyeH',6,50],['faceRadius',0,20],['faceGap',30,90],['faceMouth',0,3]] as const) { const value = patch[key]; if (typeof value === 'number' && Number.isFinite(value)) (next[key] as number) = Math.max(min, Math.min(max, value)); }
    if (typeof patch.preferredGpu === 'string' && patch.preferredGpu.length <= 512) next.preferredGpu = patch.preferredGpu;
    if (typeof patch.devicePort === 'string' && patch.devicePort.length <= 512) next.devicePort = patch.devicePort;
    if (typeof patch.weatherLabel === 'string' && patch.weatherLabel.length <= 120) next.weatherLabel = patch.weatherLabel;
@@ -122,6 +123,8 @@ else {
    const changedSize = next.widgetSize !== state().settings.widgetSize;
    store.set('settings', next); widget.setAlwaysOnTop(next.alwaysOnTop);
    if (changedSize) resizeWidget(next.widgetSize);
+   // Push updated face geometry to the OLED immediately (deduped in device.ts).
+   if (device.connected) { try { device.setFace(next.faceEyeW, next.faceEyeH, next.faceRadius, next.faceGap, next.faceMouth); } catch { /* ignore */ } }
    sync();
   });
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import { LayoutDashboard, Bell, SlidersHorizontal, Activity, Clock, CloudSun, Cpu, Github, ArrowUpRight, Volume2, VolumeX, Sparkles, Minus } from 'lucide-react';
+import { LayoutDashboard, Bell, SlidersHorizontal, Activity, Clock, CloudSun, Cpu, Github, ArrowUpRight, Volume2, VolumeX, Sparkles, Minus, Smile } from 'lucide-react';
 import QbitFace from './components/QbitFace';
 import ReminderForm from './components/ReminderForm';
 import ReminderList from './components/ReminderList';
@@ -8,6 +8,7 @@ import SettingsPanel from './components/SettingsPanel';
 import TimeFocus from './components/TimeFocus';
 import WeatherPanel from './components/WeatherPanel';
 import DevicePanel from './components/DevicePanel';
+import FaceEditor from './components/FaceEditor';
 import { useQbit } from './hooks/useQbit';
 
 const tabs = [
@@ -16,6 +17,7 @@ const tabs = [
  { name: 'Weather', icon: CloudSun },
  { name: 'System', icon: Activity },
  { name: 'Device', icon: Cpu },
+ { name: 'Face', icon: Smile },
  { name: 'Reminders', icon: Bell },
  { name: 'Settings', icon: SlidersHorizontal }
 ];
@@ -26,6 +28,7 @@ const subtitles: Record<string, string> = {
  'Weather': 'Conditions, forecast and rain alerts.',
  'System': 'A quiet look under the hood.',
  'Device': 'Your ESP32-CAM, over Bluetooth.',
+ 'Face': 'Design QBIT\u2019s face on the OLED.',
  'Reminders': 'The little things, remembered.',
  'Settings': 'Small touches that feel like you.'
 };
@@ -115,6 +118,7 @@ export default function App() {
    {tab === 'Weather' && <WeatherPanel settings={q.state.settings}/>}
    {tab === 'System' && <SystemStats stats={q.stats}/>}
    {tab === 'Device' && <DevicePanel device={q.device}/>}
+   {tab === 'Face' && <FaceEditor settings={q.state.settings} update={update} connected={q.device?.status === 'connected'}/>}
 
    {tab === 'Reminders' && <>
     <article className="card"><h3>A note for later</h3><ReminderForm add={async (text, at) => { if (!window.qbit) throw new Error('Open the Electron app to save reminders.'); await window.qbit.addReminder({ text, at }); q.sound('chime'); }}/></article>

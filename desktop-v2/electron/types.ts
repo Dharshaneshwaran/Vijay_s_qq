@@ -52,6 +52,12 @@ export interface Settings {
  // --- New: Productivity ---
  pomodoroWork: number;   // minutes
  pomodoroBreak: number;  // minutes
+ // --- New: Custom OLED face geometry (editable in the Face tab) ---
+ faceEyeW: number;    // 8-50
+ faceEyeH: number;    // 6-50
+ faceRadius: number;  // 0-20
+ faceGap: number;     // 30-90 (distance between eye centres)
+ faceMouth: number;   // 0 none, 1 smile, 2 flat, 3 open
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -74,7 +80,12 @@ export const DEFAULT_SETTINGS: Settings = {
  sendMoodsToDevice: true,
  sendWeatherToDevice: true,
  pomodoroWork: 25,
- pomodoroBreak: 5
+ pomodoroBreak: 5,
+ faceEyeW: 26,
+ faceEyeH: 36,
+ faceRadius: 12,
+ faceGap: 48,
+ faceMouth: 1
 };
 
 export interface State { reminders: Reminder[]; alarms: Alarm[]; settings: Settings }
