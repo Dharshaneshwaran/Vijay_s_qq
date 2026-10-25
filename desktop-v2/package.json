@@ -1,0 +1,54 @@
+{
+  "name": "qbit-desktop-v2",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "description": "QBIT Hub - desktop companion with Time & Productivity, Weather, System Monitor and a Bluetooth ESP32-CAM device link.",
+  "scripts": {
+    "dev": "npm run build:electron && concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron . --dev\"",
+    "build:electron": "tsc -p tsconfig.electron.json && node -e \"require('node:fs').copyFileSync('electron/preload.cjs','dist-electron/preload.cjs')\"",
+    "build": "tsc --noEmit && vite build && npm run build:electron",
+    "start": "electron .",
+    "dist": "npm run build && electron-builder --win portable"
+  },
+  "dependencies": {
+    "electron-store": "^10.0.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "serialport": "^12.0.0",
+    "systeminformation": "^5.33.16"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "com.qbit.hub",
+    "productName": "QBIT Hub",
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "portable"
+    }
+  },
+  "allowScripts": {
+    "electron@33.4.11": true,
+    "@serialport/bindings-cpp@12.0.1": true,
+    "esbuild@0.25.12": true
+  }
+}

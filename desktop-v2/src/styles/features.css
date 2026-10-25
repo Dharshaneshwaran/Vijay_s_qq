@@ -1,0 +1,136 @@
+/* ============================================================
+   QBIT Hub - styles for the new feature panels. Builds on the
+   base theme in global.css (same palette: --accent #38bfc3).
+   ============================================================ */
+
+.muted-note{font-size:11px;color:#8f999f;line-height:1.6}
+nav button.disabled{opacity:.5;cursor:not-allowed}
+.count.soon{background:#eef1f3;color:#97a2a9;font-size:9px;padding:2px 6px;border-radius:10px}
+.device-pip{width:8px;height:8px;border-radius:50%;padding:0!important}
+.device-pip.on{background:#38b99d}.device-pip.off{background:#c7ced3}
+
+/* --- Overview tiles --- */
+.overview-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:#fff;border:1px solid #e9edef;border-radius:14px;padding:18px;text-align:left;color:#34474e}
+.tile svg{color:var(--accent)}
+.tile strong{font-size:13px}
+.tile small{font-size:10px;color:var(--muted)}
+.tile small.ok{color:#2e9e86}
+.tile:hover{border-color:#cfe9e8;transform:translateY(-2px)}
+
+/* --- Time & Focus --- */
+.timefocus-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.time-clock{grid-column:1/-1;text-align:center;background:linear-gradient(115deg,#fff,#eef9f7)}
+.big-clock{font-size:52px;font-weight:600;letter-spacing:-1px;color:#1d2a30;margin:8px 0;font-variant-numeric:tabular-nums}
+.calendar .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.calendar .cal-head strong{font-size:14px}
+.calendar .cal-head button{background:#eef7f6;color:#3a9a97;width:28px;height:28px;border-radius:8px;font-size:16px;line-height:1}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-dow{font-size:9px;color:#9aa5ab;padding:4px 0;font-weight:600}
+.cal-cell{font-size:12px;color:#49585e;padding:7px 0;border-radius:8px}
+.cal-cell.today{background:var(--accent);color:#fff;font-weight:600}
+.cal-cell.empty{color:transparent}
+
+.alarms h3,.timer h3,.pomodoro h3,.weather-forecast h3,.weather-search h3,.device-status .eyebrow,.device-ports h3,.device-commands h3,.device-log h3{display:flex;align-items:center;gap:7px}
+.alarm-form{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-bottom:14px}
+.alarm-form input[type=time]{width:auto}
+.day-picker{display:flex;gap:4px;grid-column:1/-1}
+.day-picker button{width:28px;height:28px;border-radius:50%;background:#eef1f3;color:#8a959b;font-size:11px}
+.day-picker button.on{background:var(--accent);color:#fff}
+.alarm-form .primary{grid-column:1/-1;justify-self:start}
+.alarm-list{display:flex;flex-direction:column}
+.alarm-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f2f3}
+.alarm-row:last-child{border-bottom:0}
+.alarm-row strong{font-size:18px;font-variant-numeric:tabular-nums;min-width:58px}
+.alarm-row.off{opacity:.5}
+.alarm-meta{font-size:12px;color:#49585e}
+.alarm-meta small{color:var(--muted);font-size:10px}
+.switch{margin-left:auto}
+
+.timer-face{font-size:46px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;margin:12px 0;color:#1d2a30}
+.timer-presets{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.timer-presets button{background:#eef7f6;color:#3a9a97;padding:7px 12px;border-radius:8px;font-size:11px}
+.timer-controls{display:flex;gap:10px;justify-content:center}
+.timer-controls .primary,.timer-controls button{display:inline-flex;align-items:center;gap:6px}
+.timer-controls button:not(.primary){background:#eef1f3;color:#67727a;padding:11px 15px;border-radius:8px;font-size:11px}
+.pomo-phase{display:block;text-align:center;font-size:11px;color:var(--muted)}
+.pomodoro.work{background:linear-gradient(115deg,#fff,#eef9f7)}
+.pomodoro.break{background:linear-gradient(115deg,#fff,#fff3ec)}
+
+/* --- Weather --- */
+.weather-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.weather-search{grid-column:1/-1}
+.weather-form{display:flex;gap:10px;align-items:center}
+.weather-form input{flex:1}
+.weather-form .primary{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.weather-form button:not(.primary){background:#eef7f6;color:#3a9a97;padding:11px;border-radius:8px}
+.geo-results{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.geo-results button{text-align:left;background:#f6f9f9;border:1px solid #e9edef;border-radius:8px;padding:10px 12px;font-size:12px;color:#3c4a50}
+.geo-results button:hover{border-color:#cfe9e8}
+.weather-now{display:flex;flex-direction:column;gap:6px}
+.weather-now.rainy{background:linear-gradient(120deg,#fff,#eef3f8)}
+.weather-now.clear{background:linear-gradient(120deg,#fff,#fff7e9)}
+.weather-temp{font-size:56px;font-weight:600;letter-spacing:-2px;color:#1d2a30}
+.weather-desc{display:flex;align-items:center;gap:8px;font-size:14px;color:#3c4a50}
+.weather-desc svg{color:var(--accent)}
+.weather-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.weather-metrics span{display:flex;align-items:center;gap:7px;font-size:12px;color:#55636a}
+.weather-metrics svg{color:#8aa0a6}
+.rain-alert{display:flex;align-items:center;gap:7px;margin-top:12px;background:#e9f1f8;color:#3a6a92;padding:9px 12px;border-radius:9px;font-size:11px}
+.forecast-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center}
+.forecast-cell{display:flex;flex-direction:column;align-items:center;gap:5px;background:#f8fafa;border-radius:12px;padding:12px 6px}
+.forecast-cell svg{color:var(--accent)}
+.forecast-cell strong{font-size:11px;color:#49585e}
+.forecast-cell .f-max{font-size:15px;font-weight:600;color:#1d2a30}
+.forecast-cell .f-min{font-size:11px;color:var(--muted)}
+.forecast-cell small{display:flex;align-items:center;gap:3px;font-size:9px;color:#7c97b0}
+
+/* --- Device --- */
+.device-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.device-status,.device-log{grid-column:1/-1}
+.device-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.device-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px;border-radius:20px;background:#eef1f3;color:#7c868d}
+.device-badge.connected{background:#e6f6f1;color:#258b73}
+.device-badge.connected .status-dot{background:#38b99d}
+.device-badge.connecting,.device-badge.scanning{background:#fff4e5;color:#b07d2e}
+.device-badge.disconnected .status-dot{background:#c7ced3}
+.device-facts{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:0}
+.device-facts div{display:flex;flex-direction:column;gap:4px}
+.device-facts dt{font-size:9px;letter-spacing:1px;color:#97a2a9;text-transform:uppercase}
+.device-facts dd{margin:0;font-size:12px;color:#34474e;overflow-wrap:anywhere}
+.device-facts dd.with-icon{display:flex;align-items:center;gap:6px}
+.device-actions{display:flex;gap:12px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.device-actions button{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:8px;font-size:11px;background:#eef1f3;color:#67727a}
+.device-actions .primary{background:#269fa2;color:#fff}
+.port-list{display:flex;flex-direction:column;gap:8px}
+.port-row{display:flex;align-items:center;gap:12px;background:#f8fafa;border:1px solid #eceff1;border-radius:10px;padding:12px}
+.port-row.active{border-color:var(--accent);background:#f0faf9}
+.port-row svg{color:#6f8188}
+.port-info{flex:1;min-width:0}
+.port-info strong{display:block;font-size:12px;color:#34474e;overflow-wrap:anywhere}
+.port-info small{font-size:10px;color:var(--muted)}
+.port-row .primary{display:inline-flex;align-items:center;gap:6px;background:#269fa2;color:#fff;padding:8px 12px;border-radius:7px;font-size:11px}
+.port-row .primary:disabled{background:#cfe0df}
+.cmd-group{margin-top:14px}
+.cmd-group>span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#97a2a9}
+.cmd-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.cmd-buttons button{background:#eef7f6;color:#3a9a97;padding:8px 11px;border-radius:7px;font-size:11px}
+.cmd-buttons button:disabled{background:#f2f4f5;color:#bcc5ca}
+.cmd-custom{display:flex;gap:10px;margin-top:16px}
+.cmd-custom input{flex:1}
+.cmd-custom .primary{display:inline-flex;align-items:center;gap:6px;background:#269fa2;color:#fff;padding:0 15px;border-radius:8px;white-space:nowrap}
+.log-head{display:flex;justify-content:space-between;align-items:center}
+.log-lines{margin-top:10px;max-height:240px;overflow:auto;font-family:'SF Mono',Menlo,Consolas,monospace}
+.log-line{display:flex;gap:10px;font-size:11px;padding:3px 0;border-bottom:1px solid #f3f5f6}
+.log-time{color:#aab4ba;min-width:72px}
+.log-dir{min-width:20px;font-weight:700}
+.log-line.tx .log-dir{color:#2e9e86}
+.log-line.rx .log-dir{color:#3a6a92}
+.log-line.info .log-dir{color:#aab4ba}
+.log-text{color:#44535a;overflow-wrap:anywhere}
+
+@media(max-width:900px){
+ .timefocus-grid,.weather-grid,.device-grid,.overview-tiles{grid-template-columns:1fr}
+ .device-facts{grid-template-columns:repeat(2,1fr)}
+ .forecast-row{grid-template-columns:repeat(3,1fr)}
+}

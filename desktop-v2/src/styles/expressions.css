@@ -1,0 +1,28 @@
+.eye-art{width:100%;height:100%;overflow:visible;pointer-events:none}
+.eye{fill:#71dbd7;transition:d .6s ease,fill .4s,transform .5s;transform-box:fill-box;transform-origin:center}
+.gaze{transform:translate(var(--gaze-x,0px),var(--gaze-y,0px));transition:transform .12s ease-out}
+.blinking{animation:natural-blink 6s infinite;transform-box:fill-box;transform-origin:center}
+.sweat{fill:#57c7f6;opacity:0;transition:opacity .5s;transform-origin:121px 65px}
+.energy{fill:none;stroke:#71dbd7;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .5s}
+.face.happy .eye,.face.charging .eye,.face.excited .eye{d:path('M17 48 C24 24 37 24 44 48 C48 55 43 59 39 51 C33 39 29 39 23 51 C19 59 13 55 17 48 Z')}
+.face.sleepy .eye{d:path('M16 44 C25 50 35 50 45 44 C49 42 51 48 47 50 C35 57 25 57 15 50 C11 48 12 42 16 44 Z')}
+.face.focused .eye,.face.stressed .eye{d:path('M15 32 C24 35 34 38 45 40 C45 44 44 49 44 53 C33 52 24 51 17 50 C16 44 16 38 15 32 Z')}
+.face.focused .right-eye,.face.stressed .right-eye{transform:scaleX(-1)}
+.face.curious .right-eye{transform:translateY(-7px) scaleY(.8)}
+.face.surprised .eye{d:path('M14 34 C14 14 47 14 47 34 C48 41 48 51 47 58 C47 78 14 78 14 58 C13 51 13 41 14 34 Z')}
+.face.worried .left-eye{transform:rotate(13deg) scaleY(.8)}.face.worried .right-eye{transform:rotate(-13deg) scaleY(.8)}
+.face.exhausted .eye{d:path('M16 48 C24 43 37 43 45 48 C48 52 48 55 44 55 C34 51 26 51 17 55 C13 55 13 52 16 48 Z')}
+.face.playful .right-eye{d:path('M16 45 C26 40 36 40 45 45 C48 47 48 51 44 51 C34 47 26 47 17 51 C13 51 13 47 16 45 Z')}
+.face.thinking .eye{transform:translate(3px,-7px) scaleY(.85)}
+.face.stressed .sweat,.face.exhausted .sweat{opacity:1;animation:sweat 2s ease-in-out infinite}
+.face.excited{animation:bounce .7s ease-in-out infinite}.face.excited .blinking{animation:eye-bounce .7s infinite}
+.face.charging .energy{opacity:1;animation:energy 1s ease-in-out infinite}.face.charging{animation:breath 2s ease-in-out infinite}
+.face.exhausted{animation:breath 7s ease-in-out infinite}.face.alert .eye{fill:#f3cd83}
+.face.playful{animation:bounce .8s ease-in-out 2}
+.animations-paused,.animations-paused *{animation-play-state:paused!important;transition:none!important}
+@keyframes natural-blink{0%,42%,46%,100%{transform:scaleY(1)}44%{transform:scaleY(.06)}}
+@keyframes eye-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(-3px * var(--intensity,1)))}}
+@keyframes sweat{0%,100%{transform:translateY(0);opacity:.65}50%{transform:translateY(3px);opacity:1}}
+@keyframes energy{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(-9px * var(--intensity,1)))}}
+@media(prefers-reduced-motion:reduce){.face,.face *{animation:none!important;transition:none!important}}
